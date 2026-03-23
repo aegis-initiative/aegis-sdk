@@ -1,2 +1,29 @@
 # Claude Code personal settings (never commit)
 .claude/settings.local.json
+
+# TypeScript
+node_modules/
+dist/
+.tsbuildinfo
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

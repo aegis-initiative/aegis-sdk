@@ -1,0 +1,20 @@
+# AEGIS™ SDK Code Owners
+
+# Default Repository Owner(s)
+* @finnoybu
+
+# TypeScript/JavaScript SDK
+/packages/sdk-ts/ @finnoybu
+
+# Python SDK
+/packages/sdk-py/ @finnoybu
+
+# SDK Documentation
+/docs/ @finnoybu
+
+# GitHub Configuration and Automation
+/.github/ @finnoybu
+
+# Root Governance Files
+/CLAUDE.md @finnoybu
+/README.md @finnoybu

@@ -13,7 +13,7 @@ class AegisClient:
 
     Example::
 
-        client = AegisClient(base_url="https://api.aegissystems.app")
+        client = AegisClient(base_url="https://api.aegis-platform.net")
         decision = await client.propose(
             ActionProposal(
                 capability="file:write",

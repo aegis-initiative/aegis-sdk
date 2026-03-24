@@ -13,7 +13,7 @@ pip install aegis-sdk
 ```python
 from aegis_sdk import AegisClient, ActionProposal, Verdict
 
-client = AegisClient(base_url="https://api.aegissystems.app")
+client = AegisClient(base_url="https://demo.aegis-platform.net")
 
 decision = await client.propose(
     ActionProposal(

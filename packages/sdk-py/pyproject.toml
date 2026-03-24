@@ -25,7 +25,7 @@ classifiers = [
 [project.urls]
 Homepage = "https://aegissystems.app"
 Repository = "https://github.com/aegis-initiative/aegis-sdk"
-Documentation = "https://docs.aegissystems.app/sdk/python"
+Documentation = "https://aegis-docs.com/sdk/python"
 
 [tool.hatch.build.targets.wheel]
 packages = ["aegis_sdk"]

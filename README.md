@@ -42,7 +42,7 @@
 ```typescript
 import { AegisClient } from '@aegis-initiative/sdk';
 
-const aegis = new AegisClient({ endpoint: 'https://api.aegissystems.live' });
+const aegis = new AegisClient({ baseUrl: 'https://demo.aegis-platform.net' });
 
 const decision = await aegis.propose({
   actor: { id: 'agent-001', type: 'ai-agent' },
@@ -59,7 +59,7 @@ if (decision.outcome === 'ALLOW') {
 ```python
 from aegis_sdk import AegisClient
 
-aegis = AegisClient(endpoint="https://api.aegissystems.live")
+aegis = AegisClient(base_url="https://demo.aegis-platform.net")
 
 decision = aegis.propose(
     actor={"id": "agent-001", "type": "ai-agent"},
@@ -99,7 +99,7 @@ aegis-sdk/
 
 ## Documentation
 
-Full SDK reference: [aegissystems.app/sdk](https://aegissystems.app/sdk)
+Full SDK reference: [aegis-docs.com/sdk](https://aegis-docs.com/sdk)
 
 ---
 

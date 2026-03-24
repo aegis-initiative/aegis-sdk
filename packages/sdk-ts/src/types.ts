@@ -1,62 +1,53 @@
 /**
- * AEGIS SDK type definitions.
+ * Governance verdict — the four possible outcomes of a governance evaluation.
  *
- * These types mirror the aegis-platform governance API contracts
- * defined in the aegis repo's JSON Schema specifications.
+ * Matches the decision enum defined in aegis-governance:
+ * https://aegis-initiative.com/schemas/common/decision.schema.json
+ *
+ * - ALLOW: Action is permitted under current policy
+ * - DENY: Action is forbidden under current policy
+ * - ESCALATE: Action requires review by a higher authority
+ * - REQUIRE_CONFIRMATION: Action is permitted only after explicit human confirmation
  */
-
-/** Governance verdict returned by the AEGIS platform. */
 export enum Verdict {
-  ALLOW = 'ALLOW',
-  DENY = 'DENY',
-  ESCALATE = 'ESCALATE',
-  REQUIRE_CONFIRMATION = 'REQUIRE_CONFIRMATION',
+  ALLOW = "ALLOW",
+  DENY = "DENY",
+  ESCALATE = "ESCALATE",
+  REQUIRE_CONFIRMATION = "REQUIRE_CONFIRMATION",
 }
 
-/** Describes the actor initiating the action. */
-export interface Actor {
-  /** Unique identifier for the actor (e.g. "agent-001"). */
-  id: string;
-  /** The kind of actor (e.g. "ai-agent", "human", "service"). */
-  type: string;
-}
-
-/** Describes the action being proposed for governance review. */
-export interface Action {
-  /** The capability being invoked (e.g. "database.query"). */
-  capability: string;
-  /** Arbitrary parameters for the action. */
-  parameters?: Record<string, unknown>;
-}
-
-/** A proposal submitted to the governance engine for evaluation. */
+/**
+ * An action proposal submitted to the governance engine for evaluation.
+ *
+ * Mirrors the AGP ACTION_PROPOSE schema defined in aegis-governance:
+ * https://aegis-initiative.com/schemas/agp/action_propose.schema.json
+ */
 export interface ActionProposal {
-  /** The actor proposing the action. */
-  actor: Actor;
-  /** The action being proposed. */
-  action: Action;
-  /** Optional context passed to policy evaluation. */
-  context?: Record<string, unknown>;
+  /** The capability being invoked (e.g. "file:write", "network:request") */
+  capability: string;
+  /** The target resource for the action */
+  resource: string;
+  /** Action-specific parameters */
+  parameters: Record<string, unknown>;
+  /** Optional trace ID for request correlation */
+  traceId?: string;
 }
 
-/** The governance decision returned by the AEGIS platform. */
+/**
+ * A governance decision returned by the governance engine.
+ *
+ * Mirrors the AGP DECISION_RESPONSE schema defined in aegis-governance:
+ * https://aegis-initiative.com/schemas/agp/decision_response.schema.json
+ */
 export interface GovernanceDecision {
-  /** The governance verdict. */
-  verdict: Verdict;
-  /** Human-readable explanation for the decision. */
-  reason: string;
-  /** IDs of the policies that influenced this decision. */
-  policyIds: string[];
-  /** Unique audit trail identifier for this decision. */
-  auditId: string;
-  /** ISO-8601 timestamp of the decision. */
+  /** The unique ID of the evaluated action */
+  actionId: string;
+  /** The governance verdict */
+  decision: Verdict;
+  /** Human-readable explanation of the decision */
+  reason?: string;
+  /** IDs of the policies that influenced this decision */
+  policyIds?: string[];
+  /** ISO 8601 timestamp of the decision */
   timestamp: string;
-}
-
-/** Configuration options for {@link AegisClient}. */
-export interface AegisClientOptions {
-  /** Base URL of the AEGIS platform API (e.g. "https://api.aegissystems.live"). */
-  endpoint: string;
-  /** Optional API key for authenticated requests. */
-  apiKey?: string;
 }

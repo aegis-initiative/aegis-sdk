@@ -14,7 +14,7 @@ npm install @aegis-initiative/sdk
 import { AegisClient, Verdict } from "@aegis-initiative/sdk";
 
 const client = new AegisClient({
-  baseUrl: "https://api.aegissystems.app",
+  baseUrl: "https://demo.aegis-platform.net",
 });
 
 const decision = await client.propose({

@@ -10,7 +10,7 @@ readme = "README.md"
 license = "BSL-1.1"
 requires-python = ">=3.11"
 authors = [
-  { name = "AEGIS Initiative", email = "engineering@aegissystems.app" },
+  { name = "AEGIS Initiative", email = "engineering@aegis-initiative.com" },
 ]
 classifiers = [
   "Development Status :: 1 - Planning",
@@ -23,7 +23,7 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://aegissystems.app"
+Homepage = "https://aegis-initiative.com"
 Repository = "https://github.com/aegis-initiative/aegis-sdk"
 Documentation = "https://aegis-docs.com/sdk/python"
 

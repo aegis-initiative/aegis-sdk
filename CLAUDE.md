@@ -7,7 +7,7 @@ AEGIS client SDK — dual-language monorepo providing TypeScript/JavaScript and 
 - GitHub Org: github.com/aegis-initiative
 - IP Owner: Finnoybu IP LLC
 - Parent Ecosystem: Finnoybu Holdings LLC
-- Domain: aegissystems.app
+- Domain: aegis-platform.net
 
 ## This Repo's Role
 aegis-sdk is the primary integration surface for developers building on top of AEGIS. It provides TypeScript/JavaScript and Python client libraries that wrap the aegis-platform REST API. Published to npm as @aegis-initiative/sdk and to PyPI as aegis-sdk. Documentation auto-published to aegis-docs.

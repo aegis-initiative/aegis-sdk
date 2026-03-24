@@ -8,7 +8,7 @@ import type { ActionProposal, GovernanceDecision } from "./types";
  *
  * @example
  * ```ts
- * const client = new AegisClient({ baseUrl: "https://api.aegissystems.app" });
+ * const client = new AegisClient({ baseUrl: "https://api.aegis-platform.net" });
  * const decision = await client.propose({
  *   capability: "file:write",
  *   resource: "/etc/config",

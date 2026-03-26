@@ -1,4 +1,11 @@
 <p align="center">
+  <img src="https://img.shields.io/badge/ip--owner-Finnoybu%20IP%20LLC-blueviolet?style=flat-square" alt="IP Owner">
+  <a href="https://github.com/aegis-initiative"><img src="https://img.shields.io/badge/org-aegis--initiative-0084e7?style=flat-square&logo=github" alt="Org"></a>
+  <a href="https://aegis-sdk.dev"><img src="https://img.shields.io/badge/domain-aegis--sdk.dev-0084e7?style=flat-square" alt="Domain"></a>
+  <img src="https://img.shields.io/badge/visibility-public-lightgrey?style=flat-square" alt="Public">
+</p>
+
+<p align="center">
   <img src="assets/AEGIS_logo_aegis-sdk.svg" width="80" alt="AEGIS™ SDK">
 </p>
 
@@ -8,12 +15,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/aegis-initiative"><img src="https://img.shields.io/badge/org-aegis--initiative-0084e7?style=flat-square&logo=github" alt="Org"></a>
-  <a href="https://aegis-platform.net"><img src="https://img.shields.io/badge/domain-aegis--platform.net-48BB78?style=flat-square" alt="Domain"></a>
   <img src="https://img.shields.io/badge/npm-%40aegis--initiative%2Fsdk-48BB78?style=flat-square&logo=npm" alt="npm">
   <img src="https://img.shields.io/badge/pypi-aegis--sdk-48BB78?style=flat-square&logo=pypi" alt="PyPI">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-BSL--1.1-blue?style=flat-square" alt="License"></a>
-  <img src="https://img.shields.io/badge/ip--owner-Finnoybu%20IP%20LLC-blueviolet?style=flat-square" alt="IP Owner">
 </p>
 
 ---

@@ -1,7 +1,9 @@
 <p align="center">
   <img src="https://img.shields.io/badge/ip--owner-Finnoybu%20IP%20LLC-blueviolet?style=flat-square" alt="IP Owner">
-  <a href="https://github.com/aegis-initiative"><img src="https://img.shields.io/badge/org-aegis--initiative-0084e7?style=flat-square&logo=github" alt="Org"></a>
-  <a href="https://aegis-sdk.dev"><img src="https://img.shields.io/badge/domain-aegis--sdk.dev-0084e7?style=flat-square" alt="Domain"></a>
+  <a href="https://github.com/aegis-initiative"><img
+  src="https://img.shields.io/badge/org-aegis--initiative-0084e7?style=flat-square&logo=github" alt="Org"></a>
+  <a href="https://aegis-sdk.dev"><img src="https://img.shields.io/badge/domain-aegis--sdk.dev-0084e7?style=flat-square"
+  alt="Domain"></a>
   <img src="https://img.shields.io/badge/visibility-public-lightgrey?style=flat-square" alt="Public">
 </p>
 
@@ -23,7 +25,9 @@
 
 ## Overview
 
-`aegis-sdk` is the primary integration surface for developers building on top of AEGIS™. It provides TypeScript/JavaScript and Python client libraries that wrap the AEGIS™ platform API, making it straightforward to integrate governance enforcement into any AI system.
+`aegis-sdk` is the primary integration surface for developers building on top of AEGIS™. It provides
+TypeScript/JavaScript and Python client libraries that wrap the AEGIS™ platform API, making it straightforward to
+integrate governance enforcement into any AI system.
 
 > **Capability without constraint is not intelligence™**
 

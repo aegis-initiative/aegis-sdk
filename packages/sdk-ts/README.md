@@ -48,4 +48,5 @@ Every proposal returns one of four verdicts:
 
 ## Status
 
-Stub — not yet connected to aegis-platform. See [aegis-platform](https://github.com/aegis-initiative/aegis-platform) for API development progress.
+Stub — not yet connected to aegis-platform. See [aegis-platform](https://github.com/aegis-initiative/aegis-platform) for
+API development progress.

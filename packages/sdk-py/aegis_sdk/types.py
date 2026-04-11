@@ -1,7 +1,7 @@
 """Type definitions for AEGIS governance outcomes.
 
-All types mirror the JSON schemas defined in aegis-governance:
-https://github.com/aegis-initiative/aegis-governance/tree/main/aegis-core/schemas
+All types mirror the canonical JSON schemas defined in `aegis`:
+https://github.com/aegis-initiative/aegis/tree/main/schemas
 """
 
 from __future__ import annotations
@@ -14,7 +14,7 @@ from typing import Any
 class Verdict(StrEnum):
     """Governance verdict — the four possible outcomes of a governance evaluation.
 
-    Matches the decision enum defined in aegis-governance:
+    Matches the canonical decision enum defined in `aegis`:
     https://aegis-initiative.com/schemas/common/decision.schema.json
 
     - ALLOW: Action is permitted under current policy
@@ -33,7 +33,7 @@ class Verdict(StrEnum):
 class ActionProposal:
     """An action proposal submitted to the governance engine for evaluation.
 
-    Mirrors the AGP ACTION_PROPOSE schema defined in aegis-governance:
+    Mirrors the canonical AGP ACTION_PROPOSE schema defined in `aegis`:
     https://aegis-initiative.com/schemas/agp/action_propose.schema.json
     """
 
@@ -54,7 +54,7 @@ class ActionProposal:
 class GovernanceDecision:
     """A governance decision returned by the governance engine.
 
-    Mirrors the AGP DECISION_RESPONSE schema defined in aegis-governance:
+    Mirrors the canonical AGP DECISION_RESPONSE schema defined in `aegis`:
     https://aegis-initiative.com/schemas/agp/decision_response.schema.json
     """
 

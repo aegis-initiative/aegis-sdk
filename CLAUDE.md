@@ -8,8 +8,8 @@ Governance Platform.
 ## Org Context
 
 - GitHub Org: github.com/aegis-initiative
-- IP Owner: Finnoybu IP LLC
-- Parent Ecosystem: Finnoybu Holdings LLC
+- Operating Entity: AEGIS Operations LLC
+- Trademark Owner: Finnoybu IP LLC
 - Domain: aegis-platform.net
 
 ## This Repo's Role
@@ -38,7 +38,7 @@ Both SDKs expose an identical API surface wrapping the aegis-platform REST API:
 
 ### The Four Governance Outcomes (Verdict)
 
-Every governance evaluation returns exactly one of these verdicts, matching the decision schema in aegis-governance:
+Every governance evaluation returns exactly one of these verdicts, matching the canonical decision schema in `aegis`:
 
 1. **ALLOW** — Action is permitted under current policy
 2. **DENY** — Action is forbidden under current policy
@@ -54,7 +54,7 @@ Every governance evaluation returns exactly one of these verdicts, matching the 
 
 - aegis-platform — The REST API that this SDK wraps (POST /v1/governance/propose)
 - aegis-core — The governance enforcement engine that evaluates proposals behind the platform API
-- aegis-governance — Source of truth for AGP protocol schemas and type definitions
+- aegis — Canonical source of shared AGP schemas and type definitions
 - aegis-docs — SDK reference docs published here
 - aegis-ops — Publish pipeline for npm and PyPI releases
 
@@ -67,7 +67,7 @@ Every governance evaluation returns exactly one of these verdicts, matching the 
 
 - Both SDKs maintain identical API surfaces and are versioned in sync
 - All public methods must have JSDoc (TS) / docstrings (Python) + type signatures
-- Types mirror the JSON schemas defined in aegis-governance
+- Types mirror the canonical JSON schemas defined in `aegis`
 - Branch: main is protected; all changes via PR with 1 required review
 - Commit style: conventional commits (feat:, docs:, chore:, fix:)
 

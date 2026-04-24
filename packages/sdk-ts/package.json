@@ -2,7 +2,7 @@
   "name": "@aegis-initiative/sdk",
   "version": "0.0.1",
   "description": "TypeScript/JavaScript client SDK for the AEGIS Governance Platform",
-  "license": "BSL-1.1",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/aegis-initiative/aegis-sdk.git",

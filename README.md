@@ -122,8 +122,7 @@ Full SDK reference: [aegis-docs.com/sdk](https://aegis-docs.com/sdk)
 
 ## License & Trademark
 
-Licensed under the [Business Source License 1.1](LICENSE). See LICENSE for details.
+Licensed under the [Apache License 2.0](LICENSE). See LICENSE for details.
 
-AEGIS™ and **"Capability without constraint is not intelligence™"** are trademarks of **Finnoybu IP LLC**, used under
-license by **AEGIS Operations LLC**. Use of AEGIS™ marks in derivative works must not imply endorsement without
-explicit written permission.
+AEGIS™ and **"Capability without constraint is not intelligence™"** are trademarks of **AEGIS Operations LLC**.
+Use of AEGIS™ marks in derivative works must not imply endorsement without explicit written permission.

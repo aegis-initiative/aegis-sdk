@@ -9,7 +9,7 @@
     "Saltzer", "Shapira", "Moens", "Mattijs", "Freestone",
     "inspectable", "markdownlint", "crossref", "OpenAIRE",
     "tamper-evident", "exfiltration", "wordmark", "wordmarks",
-    "dataclasses", "docstrings"
+    "dataclasses", "docstrings", "CODEOWNERS"
   ],
   "ignorePaths": [
     "node_modules/**",

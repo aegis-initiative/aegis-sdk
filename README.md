@@ -28,7 +28,7 @@
 TypeScript/JavaScript and Python client libraries that wrap the AEGIS™ platform API, making it straightforward to
 integrate governance enforcement into any AI system.
 
-> **Capability without constraint is not intelligence™**
+> **Capability without constraint is not intelligence®**
 
 ---
 
@@ -124,5 +124,5 @@ Full SDK reference: [aegis-docs.com/sdk](https://aegis-docs.com/sdk)
 
 Licensed under the [Apache License 2.0](LICENSE). See LICENSE for details.
 
-AEGIS™ and **"Capability without constraint is not intelligence™"** are trademarks of **AEGIS Initiative**.
+AEGIS™ and **"Capability without constraint is not intelligence®"** are trademarks of **AEGIS Initiative**.
 Use of AEGIS™ marks in derivative works must not imply endorsement without explicit written permission.

@@ -92,9 +92,16 @@ class AegisClient:
             detail = exc.read().decode("utf-8", "replace")[:500] if exc.fp else ""
             message = f"governance API returned HTTP {exc.code}: {exc.reason}. {detail}"
             raise AegisError(message.strip()) from exc
-        except urllib.error.URLError as exc:
+        except (urllib.error.URLError, TimeoutError) as exc:
+            # A timeout that occurs establishing the connection surfaces as
+            # urllib.error.URLError (reason=socket.timeout), but a timeout
+            # that occurs mid-transfer while reading the response body
+            # surfaces as a bare TimeoutError — a sibling of URLError under
+            # OSError, not a subclass of it, so it needs its own branch here
+            # rather than falling through uncaught.
+            reason = exc.reason if isinstance(exc, urllib.error.URLError) else exc
             raise AegisConnectionError(
-                f"could not reach AEGIS platform at {self.base_url}: {exc.reason}"
+                f"could not reach AEGIS platform at {self.base_url}: {reason}"
             ) from exc
 
         return self._parse_decision(raw)

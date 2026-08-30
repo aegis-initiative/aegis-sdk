@@ -15,6 +15,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import pytest
 
 from aegis_sdk import ActionProposal, AegisClient, Verdict
+from aegis_sdk import client as _client_module
 from aegis_sdk.errors import AegisAuthError, AegisConnectionError, AegisError
 
 # Map a requested capability to the verdict the fake engine returns.
@@ -104,6 +105,37 @@ def test_connection_error_on_dead_endpoint():
     # Port 1 is reserved and never listening → connection refused.
     with pytest.raises(AegisConnectionError):
         _propose("http://127.0.0.1:1", "file:read")
+
+
+def test_timeout_during_response_body_raises_connection_error(monkeypatch):
+    # Distinct from test_connection_error_on_dead_endpoint: that case never
+    # connects at all, which urllib surfaces as urllib.error.URLError. This
+    # case connects fine and starts the response, then stalls mid-body — a
+    # timeout at that point comes back from response.read() as a bare
+    # TimeoutError, a sibling of URLError under OSError rather than a
+    # subclass of it, so it needs its own except clause in the client.
+    class _StallingHandler(BaseHTTPRequestHandler):
+        def log_message(self, *_args):
+            pass
+
+        def do_POST(self):
+            self.rfile.read(int(self.headers["Content-Length"]))
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", "1000")  # promise more than we send
+            self.end_headers()
+            self.wfile.write(b"{")  # partial body, then stall past the client timeout
+            self.wfile.flush()
+            threading.Event().wait(1)
+
+    httpd = ThreadingHTTPServer(("127.0.0.1", 0), _StallingHandler)
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    monkeypatch.setattr(_client_module, "_DEFAULT_TIMEOUT", 0.2)
+    try:
+        with pytest.raises(AegisConnectionError):
+            _propose(f"http://127.0.0.1:{httpd.server_address[1]}", "file:read")
+    finally:
+        httpd.shutdown()
 
 
 def test_malformed_response_raises_aegis_error():

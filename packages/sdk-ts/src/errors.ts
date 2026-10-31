@@ -1,8 +1,10 @@
 /**
  * AEGIS SDK error hierarchy.
  *
- * Every error includes a `helpUrl` pointing to the relevant
- * troubleshooting page on aegis-docs.com.
+ * Every error carries a structured `code` (shared with the Python SDK --
+ * see `../sdk-py/aegis_sdk/errors.py` and `docs/errors.md` for the full
+ * taxonomy) and a `helpUrl` pointing to the matching section of that
+ * taxonomy doc on aegis-docs.com.
  */
 
 const DOCS_BASE = 'https://aegis-docs.com/sdk/errors';
@@ -10,16 +12,19 @@ const DOCS_BASE = 'https://aegis-docs.com/sdk/errors';
 /**
  * Base error for all AEGIS SDK errors.
  *
- * Extends the native `Error` with a `helpUrl` for documentation.
+ * Extends the native `Error` with a structured `code` and `helpUrl`.
  */
 export class AegisError extends Error {
-  /** Link to documentation about this error. */
+  /** Structured error code, shared with the Python SDK. */
+  public readonly code: string;
+  /** Link to the relevant section of the error taxonomy doc. */
   public readonly helpUrl: string;
 
-  constructor(message: string, helpUrl?: string) {
-    super(message);
+  constructor(message: string, code = 'AEGIS_SDK_GENERAL_001', helpUrl?: string) {
+    super(`[${code}] ${message}`);
     this.name = 'AegisError';
-    this.helpUrl = helpUrl ?? `${DOCS_BASE}/general`;
+    this.code = code;
+    this.helpUrl = helpUrl ?? `${DOCS_BASE}#${code.toLowerCase()}`;
     // Restore prototype chain — required when extending built-ins in TS
     Object.setPrototypeOf(this, new.target.prototype);
   }
@@ -32,7 +37,7 @@ export class AegisError extends Error {
  */
 export class AegisConnectionError extends AegisError {
   constructor(message: string) {
-    super(message, `${DOCS_BASE}/connection`);
+    super(message, 'AEGIS_SDK_CONN_001');
     this.name = 'AegisConnectionError';
   }
 }
@@ -40,7 +45,11 @@ export class AegisConnectionError extends AegisError {
 /**
  * Thrown when an action proposal is denied by the governance engine.
  *
- * Includes the denial reason and the policies that caused it.
+ * Includes the denial reason and the policies that caused it. Not
+ * currently thrown by `AegisClient.propose()` -- a DENY verdict is a
+ * normal `GovernanceDecision` return value, not a thrown error (see
+ * client.ts's propose() docstring). Kept for SDK consumers that want to
+ * convert a DENY decision into a thrown error at their own call site.
  */
 export class AegisDeniedError extends AegisError {
   /** Human-readable reason the action was denied. */
@@ -49,7 +58,7 @@ export class AegisDeniedError extends AegisError {
   public readonly policyIds: string[];
 
   constructor(reason: string, policyIds: string[]) {
-    super(`Action denied: ${reason}`, `${DOCS_BASE}/denied`);
+    super(`Action denied: ${reason}`, 'AEGIS_SDK_DENIED_001');
     this.name = 'AegisDeniedError';
     this.reason = reason;
     this.policyIds = policyIds;
@@ -63,7 +72,7 @@ export class AegisDeniedError extends AegisError {
  */
 export class AegisAuthError extends AegisError {
   constructor(message: string) {
-    super(message, `${DOCS_BASE}/auth`);
+    super(message, 'AEGIS_SDK_AUTH_001');
     this.name = 'AegisAuthError';
   }
 }

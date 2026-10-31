@@ -14,7 +14,8 @@ This directory contains SDK documentation and guides.
 
 - `AegisClient` class reference (auto-generated from source)
 - Type definitions and governance outcomes
-- Error handling and retry strategies
+- Error handling and retry strategies — see [errors.md](errors.md) for the full error code
+  taxonomy shared by both language SDKs
 
 ### Guides
 

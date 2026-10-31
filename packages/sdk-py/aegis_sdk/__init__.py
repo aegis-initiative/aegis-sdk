@@ -3,10 +3,11 @@
 __version__ = "0.0.1"
 
 from aegis_sdk.client import AegisClient
-from aegis_sdk.types import ActionProposal, GovernanceDecision, Verdict
+from aegis_sdk.types import Actor, ActionProposal, GovernanceDecision, Verdict
 
 __all__ = [
     "AegisClient",
+    "Actor",
     "ActionProposal",
     "GovernanceDecision",
     "Verdict",

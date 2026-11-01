@@ -1,0 +1,3 @@
+# aegis-sdk isn't published to PyPI yet, so this installs the local
+# packages/sdk-py source in editable mode instead of a real release.
+-e ../../packages/sdk-py

@@ -1,29 +1,33 @@
 """AEGIS SDK error hierarchy.
 
-All errors include a ``help_url`` attribute pointing to relevant
-documentation on aegis-docs.com.
+Every error carries a structured ``code`` (shared with the TypeScript SDK --
+see ``../sdk-ts/src/errors.ts`` and ``docs/errors.md`` for the full taxonomy)
+and a ``help_url`` pointing to the matching section of that taxonomy doc on
+aegis-docs.com.
 """
 
 from __future__ import annotations
 
-_DOCS_BASE = "https://aegis-docs.com/sdk/python/errors"
+_DOCS_BASE = "https://aegis-docs.com/sdk/errors"
 
 
 class AegisError(Exception):
     """Base exception for all AEGIS SDK errors.
 
     Attributes:
+        code:     Structured error code, shared with the TypeScript SDK.
         message:  Human-readable description of what went wrong.
-        help_url: Link to the relevant troubleshooting page.
+        help_url: Link to the relevant section of the error taxonomy doc.
     """
 
-    help_url: str = f"{_DOCS_BASE}#aegis-error"
+    code: str = "AEGIS_SDK_GENERAL_001"
+    help_url: str = f"{_DOCS_BASE}#aegis_sdk_general_001"
 
     def __init__(self, message: str, *, help_url: str | None = None) -> None:
         self.message = message
         if help_url is not None:
             self.help_url = help_url
-        super().__init__(f"{message}  (see {self.help_url})")
+        super().__init__(f"[{self.code}] {message}  (see {self.help_url})")
 
 
 class AegisConnectionError(AegisError):
@@ -33,7 +37,8 @@ class AegisConnectionError(AegisError):
     service is down.
     """
 
-    help_url: str = f"{_DOCS_BASE}#connection-error"
+    code: str = "AEGIS_SDK_CONN_001"
+    help_url: str = f"{_DOCS_BASE}#aegis_sdk_conn_001"
 
     def __init__(self, message: str, *, help_url: str | None = None) -> None:
         super().__init__(message, help_url=help_url or self.help_url)
@@ -46,7 +51,8 @@ class AegisAuthError(AegisError):
     permissions.
     """
 
-    help_url: str = f"{_DOCS_BASE}#auth-error"
+    code: str = "AEGIS_SDK_AUTH_001"
+    help_url: str = f"{_DOCS_BASE}#aegis_sdk_auth_001"
 
     def __init__(self, message: str, *, help_url: str | None = None) -> None:
         super().__init__(message, help_url=help_url or self.help_url)
@@ -58,9 +64,15 @@ class AegisDeniedError(AegisError):
     Attributes:
         reason:     Why the action was denied.
         policy_ids: List of policy IDs that caused the denial.
+
+    Not currently raised by AegisClient.propose() -- a DENY verdict is a
+    normal GovernanceDecision return value, not an exception (see
+    client.py's module docstring). Kept for SDK consumers that want to
+    convert a DENY decision into a raised error at their own call site.
     """
 
-    help_url: str = f"{_DOCS_BASE}#denied-error"
+    code: str = "AEGIS_SDK_DENIED_001"
+    help_url: str = f"{_DOCS_BASE}#aegis_sdk_denied_001"
 
     def __init__(
         self,

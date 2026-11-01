@@ -8,9 +8,9 @@ import urllib.error
 import urllib.request
 
 from aegis_sdk.errors import AegisAuthError, AegisConnectionError, AegisError
-from aegis_sdk.types import ActionProposal, GovernanceDecision, Verdict
+from aegis_sdk.types import Actor, ActionProposal, GovernanceDecision, Verdict
 
-_PROPOSE_PATH = "/v1/governance/propose"
+_PROPOSE_PATH = "/api/v1/governance/propose"
 _DEFAULT_TIMEOUT = 30.0  # seconds
 
 
@@ -22,9 +22,10 @@ class AegisClient:
 
     Example::
 
-        client = AegisClient(base_url="https://api.aegis-platform.net")
+        client = AegisClient(base_url="https://demo.aegis-platform.net")
         decision = await client.propose(
             ActionProposal(
+                actor=Actor(id="agent-soc-001", type="ai-agent"),
                 capability="file:write",
                 resource="/etc/config",
                 parameters={"content": "..."},
@@ -64,12 +65,13 @@ class AegisClient:
     def _propose_sync(self, proposal: ActionProposal) -> GovernanceDecision:
         url = f"{self.base_url.rstrip('/')}{_PROPOSE_PATH}"
         payload: dict[str, object] = {
+            "actor": {"id": proposal.actor.id, "type": proposal.actor.type},
             "capability": proposal.capability,
             "resource": proposal.resource,
             "parameters": proposal.parameters,
         }
         if proposal.trace_id is not None:
-            payload["traceId"] = proposal.trace_id
+            payload["trace_id"] = proposal.trace_id
 
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
         if self.api_key:
@@ -111,11 +113,13 @@ class AegisClient:
         try:
             data = json.loads(raw)
             return GovernanceDecision(
-                action_id=data["actionId"],
+                action_id=data["action_id"],
                 decision=Verdict(data["decision"]),
                 timestamp=data["timestamp"],
                 reason=data.get("reason"),
-                policy_ids=data.get("policyIds", []),
+                policy_ids=data.get("policy_ids", []),
+                risk_score=data.get("risk_score"),
+                audit_ref=data.get("audit_ref"),
             )
         except (json.JSONDecodeError, KeyError, ValueError, TypeError) as exc:
             raise AegisError(

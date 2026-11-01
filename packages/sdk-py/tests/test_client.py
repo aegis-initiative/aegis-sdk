@@ -1,6 +1,6 @@
 """Tests for AegisClient.propose against a loopback governance endpoint.
 
-The fake server implements POST /v1/governance/propose with a rule-based
+The fake server implements POST /api/v1/governance/propose with a rule-based
 verdict so each of the four outcomes — plus auth and connection failures —
 is exercised over the real urllib code path.
 """
@@ -14,7 +14,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import pytest
 
-from aegis_sdk import ActionProposal, AegisClient, Verdict
+from aegis_sdk import Actor, ActionProposal, AegisClient, Verdict
 from aegis_sdk import client as _client_module
 from aegis_sdk.errors import AegisAuthError, AegisConnectionError, AegisError
 
@@ -32,7 +32,7 @@ class _Handler(BaseHTTPRequestHandler):
         pass
 
     def do_POST(self):
-        if self.path != "/v1/governance/propose":
+        if self.path != "/api/v1/governance/propose":
             self.send_error(404, "not found")
             return
         # Require a bearer token; mirrors the platform's auth behaviour.
@@ -40,14 +40,17 @@ class _Handler(BaseHTTPRequestHandler):
             self.send_error(401, "missing or invalid api key")
             return
         body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+        assert body["actor"] == {"id": "agent-test", "type": "ai-agent"}
         verdict = _VERDICT_BY_CAPABILITY.get(body["capability"], Verdict.DENY)
         payload = json.dumps(
             {
-                "actionId": "act-123",
+                "action_id": "act-123",
                 "decision": verdict.value,
                 "timestamp": "2026-06-16T00:00:00Z",
                 "reason": f"policy decision for {body['capability']}",
-                "policyIds": ["POL-1", "POL-2"],
+                "policy_ids": ["POL-1", "POL-2"],
+                "risk_score": 0.0,
+                "audit_ref": "audit-456",
             }
         ).encode()
         self.send_response(200)
@@ -69,7 +72,13 @@ def server():
 def _propose(base_url, capability, *, api_key="test-key"):
     client = AegisClient(base_url=base_url, api_key=api_key)
     return asyncio.run(
-        client.propose(ActionProposal(capability=capability, resource="/x"))
+        client.propose(
+            ActionProposal(
+                actor=Actor(id="agent-test", type="ai-agent"),
+                capability=capability,
+                resource="/x",
+            )
+        )
     )
 
 

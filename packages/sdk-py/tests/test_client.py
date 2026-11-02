@@ -1,8 +1,10 @@
-"""Tests for AegisClient.propose against a loopback governance endpoint.
+"""Tests for AegisClient against a loopback governance endpoint.
 
-The fake server implements POST /api/v1/governance/propose with a rule-based
-verdict so each of the four outcomes — plus auth and connection failures —
-is exercised over the real urllib code path.
+The fake server implements the three real endpoints (propose, list
+capabilities, query audit events) with just enough logic to exercise each
+of AegisClient's methods -- including a rule-based verdict for propose so
+each of the four outcomes, plus auth and connection failures, is exercised
+over the real urllib code path.
 """
 
 from __future__ import annotations
@@ -11,12 +13,55 @@ import asyncio
 import json
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import parse_qs, urlparse
 
 import pytest
 
 from aegis_sdk import Actor, ActionProposal, AegisClient, Verdict
 from aegis_sdk import client as _client_module
 from aegis_sdk.errors import AegisAuthError, AegisConnectionError, AegisError
+
+_CAPABILITIES = [
+    {
+        "id": "cap-1",
+        "name": "file.read",
+        "description": "Read files",
+        "action_types": ["file_read"],
+        "target_patterns": ["/home/*"],
+        "platform": "linux",
+    },
+    {
+        "id": "cap-2",
+        "name": "file.write",
+        "description": "Write files",
+        "action_types": ["file_write"],
+        "target_patterns": ["*"],
+        "platform": "any",
+    },
+]
+
+_AUDIT_EVENTS = [
+    {
+        "id": "evt-1",
+        "timestamp": "2026-06-16T00:00:00Z",
+        "source": "governance",
+        "session_id": "sess-1",
+        "agent_id": "agent-test",
+        "action_type": "file_read",
+        "action_target": "/home/x",
+        "decision": "ALLOW",
+        "reason": "matched policy POL-1",
+    },
+    {
+        "id": "evt-2",
+        "timestamp": "2026-06-16T00:01:00Z",
+        "source": "platform",
+        "session_id": "sess-1",
+        "event_type": "capability.create",
+        "resource_id": "cap-2",
+        "summary": "Created capability 'file.write'",
+    },
+]
 
 # Map a requested capability to the verdict the fake engine returns.
 _VERDICT_BY_CAPABILITY = {
@@ -30,6 +75,34 @@ _VERDICT_BY_CAPABILITY = {
 class _Handler(BaseHTTPRequestHandler):
     def log_message(self, *_args):  # silence test output
         pass
+
+    def _send_json(self, payload: dict) -> None:
+        body = json.dumps(payload).encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):
+        if self.headers.get("Authorization") != "Bearer test-key":
+            self.send_error(401, "missing or invalid api key")
+            return
+
+        parsed = urlparse(self.path)
+        if parsed.path == "/api/v1/capabilities":
+            self._send_json({"capabilities": _CAPABILITIES, "count": len(_CAPABILITIES)})
+            return
+        if parsed.path == "/api/v1/audit/events":
+            query = parse_qs(parsed.query)
+            events = _AUDIT_EVENTS
+            if "agent_id" in query:
+                events = [e for e in events if e.get("agent_id") == query["agent_id"][0]]
+            if "decision" in query:
+                events = [e for e in events if e.get("decision") == query["decision"][0]]
+            self._send_json({"events": events, "count": len(events)})
+            return
+        self.send_error(404, "not found")
 
     def do_POST(self):
         if self.path != "/api/v1/governance/propose":
@@ -145,6 +218,43 @@ def test_timeout_during_response_body_raises_connection_error(monkeypatch):
             _propose(f"http://127.0.0.1:{httpd.server_address[1]}", "file:read")
     finally:
         httpd.shutdown()
+
+
+def test_list_capabilities(server):
+    client = AegisClient(base_url=server, api_key="test-key")
+    caps = asyncio.run(client.list_capabilities())
+    assert [c.id for c in caps] == ["cap-1", "cap-2"]
+    assert caps[0].platform == "linux"
+    assert caps[1].platform == "any"
+    assert caps[0].action_types == ["file_read"]
+
+
+def test_get_audit_events_unfiltered(server):
+    client = AegisClient(base_url=server, api_key="test-key")
+    events = asyncio.run(client.get_audit_events())
+    assert [e.id for e in events] == ["evt-1", "evt-2"]
+    assert events[0].source == "governance"
+    assert events[0].decision == "ALLOW"
+    assert events[1].source == "platform"
+    assert events[1].summary == "Created capability 'file.write'"
+
+
+def test_get_audit_events_filtered_by_agent_id(server):
+    client = AegisClient(base_url=server, api_key="test-key")
+    events = asyncio.run(client.get_audit_events(agent_id="agent-test"))
+    assert [e.id for e in events] == ["evt-1"]
+
+
+def test_get_audit_events_filtered_by_decision(server):
+    client = AegisClient(base_url=server, api_key="test-key")
+    events = asyncio.run(client.get_audit_events(decision="ALLOW"))
+    assert [e.id for e in events] == ["evt-1"]
+
+
+def test_list_capabilities_auth_error_on_missing_key(server):
+    client = AegisClient(base_url=server, api_key=None)
+    with pytest.raises(AegisAuthError):
+        asyncio.run(client.list_capabilities())
 
 
 def test_malformed_response_raises_aegis_error():

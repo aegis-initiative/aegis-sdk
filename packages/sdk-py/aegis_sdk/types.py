@@ -110,3 +110,84 @@ class GovernanceDecision:
 
     audit_ref: str | None = None
     """Reference to the full audit trail entry -- aegis-platform extension."""
+
+
+@dataclass(frozen=True)
+class Capability:
+    """A capability registered in the governance runtime.
+
+    Mirrors aegis-platform's CapabilityItem response
+    (GET /api/v1/capabilities) -- this is a platform-layer resource, not
+    part of the canonical AGP schemas.
+    """
+
+    id: str
+    """Unique identifier for this capability."""
+
+    name: str
+    """Short human-readable label."""
+
+    description: str
+    """Longer description of what this capability allows."""
+
+    action_types: list[str]
+    """Action types this capability covers, e.g. ['file_read']."""
+
+    target_patterns: list[str]
+    """fnmatch glob patterns matching permissible targets."""
+
+    platform: str = "any"
+    """OS platform this capability's target_patterns are scoped to:
+    'linux', 'windows', 'macos', or 'any' (aegis-platform#41)."""
+
+
+@dataclass(frozen=True)
+class AuditEvent:
+    """A unified audit log entry.
+
+    Mirrors aegis-platform's AuditEventItem response
+    (GET /api/v1/audit/events). ``source`` discriminates which fields are
+    populated: "governance" entries (an AGP decision) populate
+    agent_id/action_type/action_target/decision/reason; "platform"
+    entries (a Policy/Profile/Capability/EndpointPolicy CRUD action)
+    populate event_type/resource_id/summary instead.
+    """
+
+    id: str
+    """Unique identifier for this audit entry."""
+
+    timestamp: str
+    """ISO 8601 timestamp of the event."""
+
+    source: str = "governance"
+    """Which trail this entry came from: 'governance' or 'platform'."""
+
+    session_id: str = ""
+    """The sandbox session this entry belongs to."""
+
+    request_id: str | None = None
+    """Governance only: the AGP request ID this decision answers."""
+
+    agent_id: str | None = None
+    """Governance only: the actor that requested the action."""
+
+    action_type: str | None = None
+    """Governance only: the capability/action type requested."""
+
+    action_target: str | None = None
+    """Governance only: the target resource."""
+
+    decision: str | None = None
+    """Governance only: the verdict (ALLOW/DENY/ESCALATE/REQUIRE_CONFIRMATION)."""
+
+    reason: str | None = None
+    """Governance only: human-readable explanation."""
+
+    event_type: str | None = None
+    """Platform only: the kind of CRUD action, e.g. 'capability.create'."""
+
+    resource_id: str | None = None
+    """Platform only: the id of the resource that changed."""
+
+    summary: str | None = None
+    """Platform only: human-readable summary of the change."""

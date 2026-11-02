@@ -86,3 +86,64 @@ export interface GovernanceDecision {
   /** ISO 8601 timestamp of the decision */
   timestamp: string;
 }
+
+/**
+ * A capability registered in the governance runtime.
+ *
+ * Mirrors aegis-platform's CapabilityItem response
+ * (GET /api/v1/capabilities) -- this is a platform-layer resource, not
+ * part of the canonical AGP schemas.
+ */
+export interface Capability {
+  /** Unique identifier for this capability */
+  id: string;
+  /** Short human-readable label */
+  name: string;
+  /** Longer description of what this capability allows */
+  description: string;
+  /** Action types this capability covers, e.g. ["file_read"] */
+  actionTypes: string[];
+  /** fnmatch glob patterns matching permissible targets */
+  targetPatterns: string[];
+  /** OS platform this capability's targetPatterns are scoped to: "linux", "windows", "macos", or "any" (aegis-platform#41) */
+  platform: string;
+}
+
+/**
+ * A unified audit log entry.
+ *
+ * Mirrors aegis-platform's AuditEventItem response
+ * (GET /api/v1/audit/events). `source` discriminates which fields are
+ * populated: "governance" entries (an AGP decision) populate
+ * agentId/actionType/actionTarget/decision/reason; "platform" entries (a
+ * Policy/Profile/Capability/EndpointPolicy CRUD action) populate
+ * eventType/resourceId/summary instead.
+ */
+export interface AuditEvent {
+  /** Unique identifier for this audit entry */
+  id: string;
+  /** ISO 8601 timestamp of the event */
+  timestamp: string;
+  /** Which trail this entry came from: "governance" or "platform" */
+  source: "governance" | "platform";
+  /** The sandbox session this entry belongs to */
+  sessionId: string;
+  /** Governance only: the AGP request ID this decision answers */
+  requestId?: string;
+  /** Governance only: the actor that requested the action */
+  agentId?: string;
+  /** Governance only: the capability/action type requested */
+  actionType?: string;
+  /** Governance only: the target resource */
+  actionTarget?: string;
+  /** Governance only: the verdict */
+  decision?: Verdict;
+  /** Governance only: human-readable explanation */
+  reason?: string;
+  /** Platform only: the kind of CRUD action, e.g. "capability.create" */
+  eventType?: string;
+  /** Platform only: the id of the resource that changed */
+  resourceId?: string;
+  /** Platform only: human-readable summary of the change */
+  summary?: string;
+}

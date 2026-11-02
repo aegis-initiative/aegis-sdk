@@ -1,0 +1,22 @@
+name: Python CI
+on:
+  push:
+    paths: ['packages/sdk-py/**']
+  pull_request:
+    paths: ['packages/sdk-py/**']
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/sdk-py
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: mypy aegis_sdk/
+      - run: pytest -q

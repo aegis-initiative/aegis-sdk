@@ -17,7 +17,7 @@ from urllib.parse import parse_qs, urlparse
 
 import pytest
 
-from aegis_sdk import Actor, ActionProposal, AegisClient, Verdict
+from aegis_sdk import ActionProposal, Actor, AegisClient, Verdict
 from aegis_sdk import client as _client_module
 from aegis_sdk.errors import AegisAuthError, AegisConnectionError, AegisError
 
@@ -91,15 +91,21 @@ class _Handler(BaseHTTPRequestHandler):
 
         parsed = urlparse(self.path)
         if parsed.path == "/api/v1/capabilities":
-            self._send_json({"capabilities": _CAPABILITIES, "count": len(_CAPABILITIES)})
+            self._send_json(
+                {"capabilities": _CAPABILITIES, "count": len(_CAPABILITIES)}
+            )
             return
         if parsed.path == "/api/v1/audit/events":
             query = parse_qs(parsed.query)
             events = _AUDIT_EVENTS
             if "agent_id" in query:
-                events = [e for e in events if e.get("agent_id") == query["agent_id"][0]]
+                events = [
+                    e for e in events if e.get("agent_id") == query["agent_id"][0]
+                ]
             if "decision" in query:
-                events = [e for e in events if e.get("decision") == query["decision"][0]]
+                events = [
+                    e for e in events if e.get("decision") == query["decision"][0]
+                ]
             self._send_json({"events": events, "count": len(events)})
             return
         self.send_error(404, "not found")

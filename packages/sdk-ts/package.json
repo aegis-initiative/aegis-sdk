@@ -1,6 +1,6 @@
 {
   "name": "@aegis-initiative/sdk",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "TypeScript/JavaScript client SDK for the AEGIS Governance Platform",
   "license": "Apache-2.0",
   "repository": {

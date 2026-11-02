@@ -1,6 +1,6 @@
 """AEGIS SDK — Python client for the AEGIS Governance Platform."""
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 from aegis_sdk.client import AegisClient
 from aegis_sdk.types import (

@@ -1,0 +1,67 @@
+name: Publish Python SDK
+
+# Publishes aegis-initiative-sdk to PyPI when a `sdk-py-v*` tag is pushed.
+#
+# Authentication: OIDC trusted publishing. No PyPI API token required.
+# The `id-token: write` permission lets GitHub Actions mint a
+# short-lived OIDC token that pypa/gh-action-pypi-publish exchanges for
+# a scoped upload token at pypi.org.
+#
+# Prerequisites (one-time setup on pypi.org):
+#
+#   1. Log into pypi.org as the account that will own this project.
+#   2. https://pypi.org/manage/account/publishing/ -> "Add a new
+#      pending publisher" (PyPI allows this BEFORE the project exists,
+#      unlike npm -- the first trusted-publisher run creates it).
+#        PyPI project name: aegis-initiative-sdk
+#        Owner:             aegis-initiative
+#        Repository name:   aegis-sdk
+#        Workflow name:     pypi-publish.yml
+#        Environment name:  pypi-publish
+#
+# If that configuration isn't in place, the publish step will fail
+# with an OIDC/authentication error.
+
+on:
+  push:
+    tags:
+      - 'sdk-py-v*'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/sdk-py
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: mypy aegis_sdk/
+      - run: pytest -q
+      - run: pip install build
+      - run: python -m build
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: packages/sdk-py/dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi-publish
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1

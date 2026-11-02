@@ -1,0 +1,62 @@
+name: Publish TypeScript SDK
+
+# Publishes @aegis-initiative/sdk to npm when a `sdk-ts-v*` tag is pushed.
+#
+# Authentication: OIDC trusted publishing. No npm token required.
+# The `id-token: write` permission lets GitHub Actions mint a
+# short-lived OIDC token which `npm publish --provenance` exchanges
+# for a scoped publish token at registry.npmjs.org. Provenance
+# attestations are signed with the repo identity and show up on the
+# package page.
+#
+# Prerequisites (one-time setup on npmjs.com, mirrors
+# aegis-initiative/aegis-initiative's design-system publish workflow):
+#
+#   1. Log into npmjs.com as an owner of @aegis-initiative/sdk
+#      (first publish must happen once via `npm publish` from an
+#      authenticated owner's machine before a Trusted Publisher can be
+#      configured -- npm requires the package to already exist).
+#   2. Package page → Settings → Publishing Access → Trusted Publisher
+#   3. Add a GitHub Actions trusted publisher with:
+#        Organization:   aegis-initiative
+#        Repository:     aegis-sdk
+#        Workflow:       .github/workflows/npm-publish.yml
+#        Environment:    npm-publish
+#
+# If that configuration isn't in place, `npm publish` will fall
+# through to token auth, fail with ENEEDAUTH, and the workflow run
+# will error out.
+
+on:
+  push:
+    tags:
+      - 'sdk-ts-v*'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    defaults:
+      run:
+        working-directory: packages/sdk-ts
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          # Node 24 ships with npm 11.x natively, which supports OIDC
+          # trusted publishing. Node 22 LTS only ships npm 10.9.x,
+          # which does NOT know how to exchange an OIDC token for a
+          # scoped publish token at registry.npmjs.org.
+          node-version: 24
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      # No `registry-url` on setup-node: that action writes an .npmrc
+      # template with an auth line, and its presence -- even empty --
+      # makes npm take the token-auth path instead of OIDC.
+      - run: npm publish --access public --provenance

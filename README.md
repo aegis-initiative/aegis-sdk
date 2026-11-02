@@ -37,7 +37,7 @@ integrate governance enforcement into any AI system.
 | Package | Language | Registry | Install |
 |---|---|---|---|
 | `@aegis-initiative/sdk` | TypeScript / JavaScript | npm | `npm install @aegis-initiative/sdk` |
-| `aegis-sdk` | Python | PyPI | `pip install aegis-sdk` |
+| `aegis-initiative-sdk` (imports as `aegis_sdk`) | Python | PyPI | `pip install aegis-initiative-sdk` |
 
 ---
 

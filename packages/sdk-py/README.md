@@ -9,7 +9,9 @@ pip install aegis-initiative-sdk
 ```
 
 ```python
-from aegis_sdk import AegisClient  # the import name is aegis_sdk, not the PyPI package name
+from aegis_sdk import (
+    AegisClient,
+)  # the import name is aegis_sdk, not the PyPI package name
 ```
 
 ## Usage
@@ -21,7 +23,9 @@ from aegis_sdk import ActionProposal, AegisClient, Actor, Verdict
 
 
 async def main():
-    client = AegisClient(base_url="https://demo.aegis-platform.net", api_key="your-session-token")
+    client = AegisClient(
+        base_url="https://demo.aegis-platform.net", api_key="your-session-token"
+    )
 
     decision = await client.propose(
         ActionProposal(
@@ -35,7 +39,9 @@ async def main():
     if decision.decision is Verdict.ALLOW:
         ...  # proceed with the action
     elif decision.decision is Verdict.DENY:
-        print(f"Denied: {decision.reason}")  # a normal return value, not a raised exception
+        print(
+            f"Denied: {decision.reason}"
+        )  # a normal return value, not a raised exception
 
 
 asyncio.run(main())

@@ -7,10 +7,10 @@ import json
 import urllib.error
 import urllib.parse
 import urllib.request
+from typing import Any
 
 from aegis_sdk.errors import AegisAuthError, AegisConnectionError, AegisError
 from aegis_sdk.types import (
-    Actor,
     ActionProposal,
     AuditEvent,
     Capability,
@@ -205,7 +205,7 @@ class AegisClient:
         *,
         json_body: dict[str, object] | None = None,
         params: dict[str, str] | None = None,
-    ) -> dict:
+    ) -> dict[str, Any]:
         """Issue one HTTP request and return its parsed JSON body.
 
         Shared by every endpoint method -- the response SHAPE (which
@@ -250,6 +250,7 @@ class AegisClient:
             ) from exc
 
         try:
-            return json.loads(raw)
+            parsed: dict[str, Any] = json.loads(raw)
         except json.JSONDecodeError as exc:
             raise AegisError(f"malformed JSON in API response: {exc}") from exc
+        return parsed

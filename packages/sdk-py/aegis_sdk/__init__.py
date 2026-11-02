@@ -4,8 +4,8 @@ __version__ = "0.0.1"
 
 from aegis_sdk.client import AegisClient
 from aegis_sdk.types import (
-    Actor,
     ActionProposal,
+    Actor,
     AuditEvent,
     Capability,
     GovernanceDecision,
